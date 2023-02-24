@@ -8,6 +8,7 @@ let botones = Array.from(document.getElementsByTagName("button"));
 let jugadasGuardadas = [];
 let jugadaGanadora = [];
 let jugadaUsuario = [];
+let posibilidades = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 botones.forEach((x) => x.addEventListener("click", ponerFicha));
 
@@ -141,7 +142,8 @@ function estado() {
 
 function ia() {
   function aleatorio(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    let i = Math.floor(Math.random() * (max - min + 1)) + min;
+    return posibilidades[i];
   }
 
   function noAleatorio(repetido) {
@@ -156,31 +158,35 @@ function ia() {
       ///////////////////////////////
 
       if (jugada[0] == jugadaUsuario[0]) {
+        let index;
+        if (casillasOcupadas == 1) {
+          index = 0;
+        } else if (casillasOcupadas == 3) {
+          index = 1;
+        } else if (casillasOcupadas == 5) {
+          // index = 2;
+          index = 1;
+          if (jugadaUsuario.length > 2) jugadaUsuario.splice(1, 1);
+        } else if (casillasOcupadas == 7) {
+          // index = 2;
+          index = 1;
+        }
         if (jugada[1] == jugadaUsuario[1]) {
-          let index;
-          if (casillasOcupadas == 1) {
-            index = 0;
-          } else if (casillasOcupadas == 3) {
-            index = 1;
-          } else if (casillasOcupadas == 5) {
-            // index = 2;
-            index = 1;
-            jugadaUsuario.splice(1, 1);
-          } else if (casillasOcupadas == 7) {
-            // index = 2;
-            index = 1;
-          }
           console.log("LA JUGADA A EVALUAR ES ", jugada);
           if (jugadaUsuario[index] == jugada[index < 2 ? index : 2]) {
             numeroPosible = jugada[index + 1];
             console.log("EL NUMERO POSIBLE DEL JUGADOR SERÁ ", numeroPosible);
-            return numeroPosible;
+            if (numeroPosible != repetido) {
+              posibilidades.indexOf(numeroPosible);
+              return numeroPosible;
+            }
           }
         }
       }
 
       //////////////////////////////
     }
+    posibilidades.slice(numeroPosible, 1);
     return numeroPosible;
   }
 
