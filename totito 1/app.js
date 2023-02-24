@@ -35,6 +35,10 @@ function ponerFicha(event) {
       textoVictoria.innerHTML = "Perdiste :(";
       partidaAcabada = true;
       textoVictoria.style.visibility = "visible";
+    } else if (estadoPartida == 10) {
+      textoVictoria.innerHTML = "Empate, vuelve a jugar";
+      partidaAcabada = true;
+      textoVictoria.style.visibility = "visible";
     }
   }
 }
@@ -81,6 +85,8 @@ function estado() {
   } else if (sonIguales(botones[6], botones[4], botones[2])) {
     posicionVictoria = 8;
     jugadaGanadora = [6, 4, 2];
+  } else if (casillasOcupadas == 9) {
+    posicionVictoria = -1;
   }
 
   if (posicionVictoria > 0) {
@@ -89,6 +95,8 @@ function estado() {
     } else {
       nEstado = -1;
     }
+  } else if (posicionVictoria == -1) {
+    return 10;
   }
   return nEstado;
 }
@@ -98,6 +106,21 @@ function ia() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  function noAleatorio(pos) {
+    obtenerDatos();
+    jugadasGuardadas;
+    for (let i = 0; i < jugadasGuardadas.length; i++) {
+      let jugada = [];
+      jugada = jugadasGuardadas[i];
+      console.log(jugada);
+      if (jugada.includes(pos)) {
+        return pos;
+      } else {
+        return aleatorio(0, 9);
+      }
+    }
+  }
+
   let valores = botones.map((x) => x.innerHTML);
   let pos = -1;
 
@@ -105,26 +128,36 @@ function ia() {
     pos = 4;
   } else {
     let n = aleatorio(0, botones.length - 1);
+    noAleatorio(n);
     while (valores[n] != "") {
       n = aleatorio(0, botones.length - 1);
+      // n = noAleatorio(n);
     }
     pos = n;
   }
 
   botones[pos].innerHTML = "O";
-  return pos;
+  // return pos;
 }
 
-// function reiniciarPartida() {}
+function reiniciarPartida() {
+  href;
+}
 
 function reiniciarDatos() {
-  textoVictoria.innerHTML = "Perdiste :(";
+  textoVictoria.innerHTML = "Datos de IA borrados";
   textoVictoria.style.visibility = "visible";
+  localStorage.clear();
+}
+
+function obtenerDatos() {
+  jugadasGuardadas = JSON.parse(localStorage.getItem("jugadas")) ?? [];
 }
 
 function persistirDatos() {
   console.log("PERSISTIENDO DATOS");
-  jugadasGuardadas = JSON.parse(localStorage.getItem("jugadas"));
+  jugadasGuardadas = JSON.parse(localStorage.getItem("jugadas")) ?? [];
+  if (jugadasGuardadas.length > 10) return;
   jugadasGuardadas.push(jugadaGanadora);
   localStorage.setItem("jugadas", JSON.stringify(jugadasGuardadas));
 }
