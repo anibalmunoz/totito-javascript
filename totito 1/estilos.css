@@ -1,6 +1,6 @@
 body {
-  background-color: gainsboro;
-  color: black;
+  background-color: darkslategrey;
+  color: aliceblue;
   font-family: "Press Start 2P";
 }
 
@@ -17,6 +17,48 @@ h2 {
   font-size: 2.5em;
 }
 
+.cent {
+  margin: auto;
+  height: 50px;
+  cursor: pointer;
+  width: 150px;
+  font-size: large;
+  color: bisque;
+  background-color: steelblue;
+  text-align: center;
+  align-content: center;
+}
+
+.cent2 {
+  margin: auto;
+  height: 50px;
+  cursor: pointer;
+  width: 150px;
+  font-size: large;
+  color: bisque;
+  background-color: steelblue;
+  text-align: center;
+  align-content: center;
+}
+
+.cent:hover {
+  background-color: rgb(58, 146, 26);
+}
+
+.cent:active {
+  box-shadow: inset -2px -2px 3px rgba(255, 255, 255, 0.6),
+    inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.cent2:hover {
+  background-color: rgba(255, 0, 0, 1);
+}
+
+.cent2:active {
+  box-shadow: inset -2px -2px 3px rgba(255, 255, 255, 0.6),
+    inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
 #tablero {
   margin: auto;
   width: 550px;
@@ -27,12 +69,13 @@ h2 {
 
 #tablero > button {
   width: 250px;
-  height: 150px;
+  cursor: pointer;
+  height: 175px;
   max-width: 33.33%;
   font-size: 10em;
 }
 
 #textoVictoria {
   visibility: hidden;
-  color: chartreuse;
+  color: yellow;
 }
