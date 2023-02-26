@@ -8,7 +8,7 @@ let botones = Array.from(document.getElementsByTagName("button"));
 let jugadasGuardadas = [];
 let jugadaGanadora = [];
 let jugadaUsuario = [];
-let posibilidades = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+let numerosRepetidos = [];
 
 botones.forEach((x) => x.addEventListener("click", ponerFicha));
 
@@ -19,6 +19,7 @@ function ponerFicha(event) {
 
     //
     jugadaUsuario.push(botonPulsado.id);
+    numerosRepetidos.push(botonPulsado.id);
     //
 
     casillasOcupadas += 1;
@@ -142,52 +143,55 @@ function estado() {
 
 function ia() {
   function aleatorio(min, max) {
-    let i = Math.floor(Math.random() * (max - min + 1)) + min;
-    return posibilidades[i];
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function noAleatorio(repetido) {
+  function noAleatorio() {
     obtenerDatos();
     if (jugadasGuardadas.length == 0) return aleatorio(0, botones.length - 1);
-    let numeroPosible = aleatorio(0, botones.length - 1);
 
     for (let i = 0; i < jugadasGuardadas.length; i++) {
       let jugada = [];
       jugada = jugadasGuardadas[i];
-
       ///////////////////////////////
-
-      if (jugada[0] == jugadaUsuario[0]) {
+      const jugadaModificada = jugadaUsuario.slice();
+      if (
+        jugada[0] == jugadaModificada[0] ||
+        jugada[0] == jugadaModificada[1]
+      ) {
         let index;
         if (casillasOcupadas == 1) {
           index = 0;
         } else if (casillasOcupadas == 3) {
           index = 1;
         } else if (casillasOcupadas == 5) {
-          // index = 2;
           index = 1;
-          if (jugadaUsuario.length > 2) jugadaUsuario.splice(1, 1);
+          if (jugadaModificada.length > 3) jugadaModificada.shift();
         } else if (casillasOcupadas == 7) {
-          // index = 2;
+          if (jugadaModificada.length > 3) jugadaModificada.shift();
           index = 1;
         }
-        if (jugada[1] == jugadaUsuario[1]) {
-          console.log("LA JUGADA A EVALUAR ES ", jugada);
-          if (jugadaUsuario[index] == jugada[index < 2 ? index : 2]) {
-            numeroPosible = jugada[index + 1];
-            console.log("EL NUMERO POSIBLE DEL JUGADOR SERÁ ", numeroPosible);
-            if (numeroPosible != repetido) {
-              posibilidades.indexOf(numeroPosible);
+        if (
+          jugada[1] == jugadaModificada[1] ||
+          jugada[1] == jugadaModificada[2]
+        ) {
+          if (
+            jugadaModificada[index] == jugada[index] ||
+            jugadaModificada[index + 1] == jugada[index]
+          ) {
+            let numeroPosible = jugada[index + 1];
+            if (!numerosRepetidos.find((element) => element == numeroPosible)) {
+              console.log("LA JUGADA A EVALUAR ES ", jugada);
+              console.log("EL NUMERO POSIBLE DEL JUGADOR SERÁ ", numeroPosible);
               return numeroPosible;
             }
           }
         }
       }
-
       //////////////////////////////
     }
-    posibilidades.slice(numeroPosible, 1);
-    return numeroPosible;
+    let numeroAleatorio = aleatorio(0, botones.length - 1);
+    return numeroAleatorio;
   }
 
   let valores = botones.map((x) => x.innerHTML);
@@ -196,18 +200,13 @@ function ia() {
   if (valores[4] == "") {
     pos = 4;
   } else {
-    // let n = aleatorio(0, botones.length - 1);
     n = noAleatorio();
     while (valores[n] != "") {
-      let repetido = n;
-      // n = aleatorio(0, botones.length - 1);
-      n = noAleatorio(repetido);
+      n = aleatorio(0, botones.length - 1);
     }
     pos = n;
   }
-  ////////////////
-
-  /////////////
+  numerosRepetidos.push(pos);
   botones[pos].innerHTML = "O";
 }
 
@@ -226,19 +225,13 @@ function obtenerDatos() {
 }
 
 function persistirDatos() {
-  console.log("PERSISTIENDO DATOS");
   jugadasGuardadas = JSON.parse(localStorage.getItem("jugadas")) ?? [];
   if (jugadasGuardadas.length > 48) return;
-  console.log("Jugada ganadora", jugadaGanadora);
-  // for (let i in jugadasGuardadas) {
-  //   if (jugadasGuardadas[i] == jugadaGanadora) {
-  //     console.log("Esta jugada se repite");
-  //   } else {
-  //     console.log("Esta jugada se repite");
-  //   }
-  //   console.log("comparacion", i, jugadaGanadora);
-  // }
-  //TODO: EVITAR GUARDAR JUGADAS REPETIDAS
+  if (jugadaGanadora.length < 3) {
+    return console.log("LA JUGADA incorrecta FUE ", jugadaGanadora);
+  }
+  console.log("GUARDANDO DATOS");
+  console.log("Jugada ganadora nueva", jugadaGanadora);
   jugadasGuardadas.push(jugadaGanadora);
   jugadaUsuario = [];
   jugadaGanadora = [];
